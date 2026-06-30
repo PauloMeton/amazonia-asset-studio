@@ -2024,6 +2024,12 @@ function boot(){
 if(document.querySelector('a-scene').hasLoaded) boot();
 else document.querySelector('a-scene').addEventListener('loaded', boot);
 Auth.init();
+
+/* ===== Ponte para o Game Studio (sprite do modelo 3D) ===== */
+(function(){ function snap(){ let url=''; try{ const scn=document.querySelector('a-scene'); const ss=scn&&scn.components&&scn.components.screenshot; if(ss){ const c=ss.getCanvas('perspective'); url=c.toDataURL('image/png'); } else if(scn&&scn.renderer){ url=scn.renderer.domElement.toDataURL('image/png'); } }catch(e){} try{ parent.postMessage({type:'amz_3dimage',data:url},'*'); }catch(e){} }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='amz_get3D') snap(); });
+  if(window.parent!==window){ try{ const h=document.querySelector('header'); if(h){ const b=document.createElement('button'); b.textContent='✅ Usar no jogo'; b.style.marginLeft='6px'; b.onclick=snap; h.appendChild(b); } }catch(e){} }
+})();
 </script>
 </body>
 </html>
